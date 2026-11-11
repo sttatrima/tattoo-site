@@ -2,6 +2,7 @@
 
 import { artists, getFeaturedArtists } from "@/data/artists";
 import { ArtistCard } from "./ArtistCard";
+import { Button } from "./Button";
 
 export function ArtistsSection() {
   const featuredArtists = getFeaturedArtists();
