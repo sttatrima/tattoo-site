@@ -5,8 +5,9 @@ import Link from "next/link";
 import { Button } from "@/components/Button";
 import { getCollectionByHandle, collections, getProductsByCategory } from "@/data/products";
 
-export async function generateMetadata({ params }: { params: { handle: string } }): Promise<Metadata> {
-  const collection = getCollectionByHandle(params.handle);
+export async function generateMetadata({ params }: { params: Promise<{ handle: string }> }): Promise<Metadata> {
+  const { handle } = await params;
+  const collection = getCollectionByHandle(handle);
   if (!collection) return { title: "Collection Not Found" };
 
   return {
@@ -15,15 +16,15 @@ export async function generateMetadata({ params }: { params: { handle: string } 
   };
 }
 
-export default function CollectionPage({ params }: { params: { handle: string } }) {
-  const collection = getCollectionByHandle(params.handle);
+export default function CollectionPage({ params }: { params: Promise<{ handle: string }> }) {
+  const { handle } = await params;
+  const collection = getCollectionByHandle(handle);
   if (!collection) notFound();
 
-  const categoryProducts = getProductsByCategory(collection.handle);
+  const categoryProducts = getProductsByCategory(handle);
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Collection Hero */}
       <section className="relative h-[50vh] md:h-[60vh] overflow-hidden">
         <Image
           src={collection.image}

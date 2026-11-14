@@ -7,8 +7,9 @@ import { useCart } from "@/context/cart-context";
 import { getProductByHandle, products } from "@/data/products";
 import { generateProductJsonLd } from "@/lib/structured-data";
 
-export async function generateMetadata({ params }: { params: { handle: string } }): Promise<Metadata> {
-  const product = getProductByHandle(params.handle);
+export async function generateMetadata({ params }: { params: Promise<{ handle: string }> }): Promise<Metadata> {
+  const { handle } = await params;
+  const product = getProductByHandle(handle);
   if (!product) return { title: "Product Not Found" };
 
   return {
@@ -22,18 +23,18 @@ export async function generateMetadata({ params }: { params: { handle: string } 
   };
 }
 
-export default function ProductPage({ params }: { params: { handle: string } }) {
-  const product = getProductByHandle(params.handle);
+export default function ProductPage({ params }: { params: Promise<{ handle: string }> }) {
+  const { handle } = await params;
+  const product = getProductByHandle(handle);
   if (!product) notFound();
 
   const { addItem } = useCart();
   const isInStock = product.stockStatus === "in_stock";
   const priceFormatted = (product.price / 100).toFixed(2);
-  const productUrl = `https://inkstudio.com/products/${product.handle}`;
+  const productUrl = `https://inkstudio.com/products/${handle}`;
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Product JSON-LD */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -65,7 +66,6 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
 
       <section className="container py-12 md:py-24">
         <div className="grid lg:grid-cols-2 gap-12">
-          {/* Product Images */}
           <div className="space-y-4">
             <div className="relative aspect-square bg-muted rounded-xl overflow-hidden border border-border">
               <Image
@@ -91,7 +91,6 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
             </div>
           </div>
 
-          {/* Product Info */}
           <div className="space-y-6">
             <div className="flex items-baseline gap-2">
               <span className="text-3xl font-bold">{product.currency === "GBP" ? "£" : ""}{priceFormatted}</span>

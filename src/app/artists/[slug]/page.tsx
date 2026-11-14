@@ -7,8 +7,9 @@ import { artists, getArtistBySlug } from "@/data/artists";
 import { tattoos, getTattoosByArtist } from "@/data/tattoos";
 import { generateArtistJsonLd } from "@/lib/structured-data";
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const artist = getArtistBySlug(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const artist = getArtistBySlug(slug);
   if (!artist) return { title: "Artist Not Found" };
 
   return {
@@ -22,16 +23,16 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default function ArtistPage({ params }: { params: { slug: string } }) {
-  const artist = getArtistBySlug(params.slug);
+export default function ArtistPage({ params }: { params: Promise<{ slug: string }> }) {
+  const { slug } = await params;
+  const artist = getArtistBySlug(slug);
   if (!artist) notFound();
 
   const artistTattoos = getTattoosByArtist(artist.slug);
-  const artistUrl = `https://inkstudio.com/artists/${artist.slug}`;
+  const artistUrl = `https://inkstudio.com/artists/${slug}`;
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Artist JSON-LD */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -47,7 +48,6 @@ export default function ArtistPage({ params }: { params: { slug: string } }) {
         }}
       />
 
-      {/* Artist Hero Banner */}
       <section className="relative h-[60vh] md:h-[50vh] overflow-hidden">
         <Image
           src={artist.avatar}
@@ -80,7 +80,6 @@ export default function ArtistPage({ params }: { params: { slug: string } }) {
         </div>
       </section>
 
-      {/* Artist Details Grid */}
       <section className="py-16 md:py-24">
         <div className="container">
           <div className="grid lg:grid-cols-3 gap-12">
@@ -158,7 +157,6 @@ export default function ArtistPage({ params }: { params: { slug: string } }) {
         </div>
       </section>
 
-      {/* Booking CTA */}
       <section className="py-16 bg-muted border-t border-border">
         <div className="container max-w-3xl text-center">
           <h2 className="text-3xl font-bold mb-4">Book with {artist.name.split(" ")[0]}</h2>
