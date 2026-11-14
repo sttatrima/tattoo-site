@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { CartButton } from "@/components/CartDrawer";
+import { Button } from "@/components/Button";
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -17,18 +19,19 @@ export function Header() {
     { href: "/#gallery", label: "Gallery" },
     { href: "/#artists", label: "Artists" },
     { href: "/#booking", label: "Book Now" },
-    { href: "/info", label: "Info" },
+    { href: "/collections/all", label: "Shop" },
+    { href: "/about-us", label: "About" },
   ];
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${scrolled ? "bg-background/95 backdrop-blur-md border-b border-border" : "bg-transparent"}`}>
       <nav className="container" aria-label="Main navigation">
         <div className="flex items-center justify-between h-16 md:h-20">
-          <Link href="/" className="font-bold text-xl md:text-2xl tracking-tight" aria-label="Go to homepage">
+          <Link href="/" className="font-playfair font-bold text-xl md:text-2xl tracking-tight" aria-label="Go to homepage">
             INK STUDIO
           </Link>
 
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-6">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
@@ -38,10 +41,8 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/#booking"
-              className="px-5 py-2.5 bg-accent text-background font-medium rounded-lg hover:bg-accent-hover transition-colors text-sm"
-            >
+            <CartButton />
+            <Link href="/#booking" className="px-5 py-2.5 bg-accent text-background font-medium rounded-lg hover:bg-accent-hover transition-colors text-sm">
               Book Now
             </Link>
           </div>
@@ -80,13 +81,12 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href="/#booking"
-              className="px-4 py-3 bg-accent text-background font-medium rounded-lg text-center hover:bg-accent-hover transition-colors"
+            <button
               onClick={() => setMobileMenuOpen(false)}
+              className="w-full px-4 py-3 bg-accent text-background font-medium text-center hover:bg-accent-hover transition-colors"
             >
               Book Now
-            </Link>
+            </button>
           </div>
         </div>
       </nav>
