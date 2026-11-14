@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { Button } from "./Button";
 
 export function Hero() {
@@ -30,11 +29,11 @@ export function Hero() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-            <Button size="lg" asChild className="w-full sm:w-auto">
-              <Link href="/#booking">Book Consultation</Link>
+            <Button href="/#booking" size="lg" className="w-full sm:w-auto">
+              Book Consultation
             </Button>
-            <Button size="lg" variant="outline" asChild className="w-full sm:w-auto">
-              <Link href="/#gallery">View Gallery</Link>
+            <Button href="/#gallery" size="lg" variant="outline" className="w-full sm:w-auto">
+              View Gallery
             </Button>
           </div>
 

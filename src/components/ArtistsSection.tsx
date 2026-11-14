@@ -26,8 +26,8 @@ export function ArtistsSection() {
 
         {allArtists.length > featuredArtists.length && (
           <div className="text-center">
-            <Button variant="outline" asChild>
-              <a href="/artists">View All Artists ({allArtists.length}) →</a>
+            <Button variant="outline" href="/artists">
+              View All Artists ({allArtists.length}) →
             </Button>
           </div>
         )}

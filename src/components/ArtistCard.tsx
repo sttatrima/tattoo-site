@@ -68,8 +68,8 @@ export function ArtistCard({ artist, variant = "default" }: ArtistCardProps) {
         </div>
 
         <div className="pt-4 border-t border-border">
-          <Button variant="outline" className="w-full" asChild>
-            <a href={`/artists/${artist.slug}`}>View Portfolio →</a>
+          <Button variant="outline" className="w-full" href={`/artists/${artist.slug}`}>
+            View Portfolio →
           </Button>
         </div>
       </div>
