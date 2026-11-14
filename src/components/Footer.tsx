@@ -2,9 +2,16 @@
 
 import Link from "next/link";
 import { Button } from "@/components/Button";
+import { useState, useEffect } from "react";
 
 export function Footer() {
-  const currentYear = new Date().getFullYear();
+  const [currentYear, setCurrentYear] = useState<number | null>(null);
+
+  useEffect(() => {
+    setCurrentYear(new Date().getFullYear());
+  }, []);
+
+  const displayYear = currentYear ?? 2026;
 
   const footerLinks = {
     studio: [
@@ -136,7 +143,7 @@ export function Footer() {
 
         <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">
-            © {currentYear} INK STUDIO. All rights reserved.
+            © {displayYear} INK STUDIO. All rights reserved.
           </p>
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <span>📍 10 East Parade, Heworth, YO31 7YJ</span>

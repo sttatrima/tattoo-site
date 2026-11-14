@@ -3,9 +3,11 @@ import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/Button";
-import { useCart } from "@/context/cart-context";
-import { getProductByHandle, products } from "@/data/products";
+import { AddToCartButton } from "@/components/AddToCartButton";
+import { getProductByHandle } from "@/data/products";
 import { generateProductJsonLd } from "@/lib/structured-data";
+
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ handle: string }> }): Promise<Metadata> {
   const { handle } = await params;
@@ -23,12 +25,11 @@ export async function generateMetadata({ params }: { params: Promise<{ handle: s
   };
 }
 
-export default function ProductPage({ params }: { params: Promise<{ handle: string }> }) {
+export default async function ProductPage({ params }: { params: Promise<{ handle: string }> }) {
   const { handle } = await params;
   const product = getProductByHandle(handle);
   if (!product) notFound();
 
-  const { addItem } = useCart();
   const isInStock = product.stockStatus === "in_stock";
   const priceFormatted = (product.price / 100).toFixed(2);
   const productUrl = `https://inkstudio.com/products/${handle}`;
@@ -134,19 +135,7 @@ export default function ProductPage({ params }: { params: Promise<{ handle: stri
             </div>
 
             <div className="pt-4">
-              {isInStock ? (
-                <Button
-                  className="w-full bg-accent text-background hover:bg-accent-hover"
-                  size="lg"
-                  onClick={() => addItem(product)}
-                >
-                  Add to Cart
-                </Button>
-              ) : (
-                <Button variant="outline" className="w-full" disabled size="lg">
-                  Sold Out
-                </Button>
-              )}
+              <AddToCartButton product={product} isInStock={isInStock} />
             </div>
           </div>
         </div>

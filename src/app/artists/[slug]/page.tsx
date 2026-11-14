@@ -7,6 +7,8 @@ import { artists, getArtistBySlug } from "@/data/artists";
 import { tattoos, getTattoosByArtist } from "@/data/tattoos";
 import { generateArtistJsonLd } from "@/lib/structured-data";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const artist = getArtistBySlug(slug);
@@ -23,7 +25,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
-export default function ArtistPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function ArtistPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const artist = getArtistBySlug(slug);
   if (!artist) notFound();

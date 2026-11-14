@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Button } from "@/components/Button";
 import { getCollectionByHandle, collections, getProductsByCategory } from "@/data/products";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata({ params }: { params: Promise<{ handle: string }> }): Promise<Metadata> {
   const { handle } = await params;
   const collection = getCollectionByHandle(handle);
@@ -16,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ handle: s
   };
 }
 
-export default function CollectionPage({ params }: { params: Promise<{ handle: string }> }) {
+export default async function CollectionPage({ params }: { params: Promise<{ handle: string }> }) {
   const { handle } = await params;
   const collection = getCollectionByHandle(handle);
   if (!collection) notFound();
