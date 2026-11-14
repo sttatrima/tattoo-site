@@ -3,7 +3,9 @@ import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/Button";
-import { getProductByHandle } from "@/data/products";
+import { useCart } from "@/context/cart-context";
+import { getProductByHandle, products } from "@/data/products";
+import { generateProductJsonLd } from "@/lib/structured-data";
 
 export async function generateMetadata({ params }: { params: { handle: string } }): Promise<Metadata> {
   const product = getProductByHandle(params.handle);
@@ -24,11 +26,31 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
   const product = getProductByHandle(params.handle);
   if (!product) notFound();
 
+  const { addItem } = useCart();
   const isInStock = product.stockStatus === "in_stock";
   const priceFormatted = (product.price / 100).toFixed(2);
+  const productUrl = `https://inkstudio.com/products/${product.handle}`;
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Product JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: generateProductJsonLd({
+            name: product.title,
+            handle: product.handle,
+            description: product.description,
+            price: product.price,
+            currency: product.currency,
+            image: product.featuredImage,
+            inStock: isInStock,
+            sku: product.id,
+            url: productUrl,
+          }),
+        }}
+      />
+
       <nav className="container py-4" aria-label="Breadcrumb">
         <Link href="/" className="text-xs text-muted-foreground hover:text-accent transition-colors">
           Home
@@ -114,11 +136,15 @@ export default function ProductPage({ params }: { params: { handle: string } }) 
 
             <div className="pt-4">
               {isInStock ? (
-                <Button className="w-full" size="lg">
+                <Button
+                  className="w-full bg-accent text-background hover:bg-accent-hover"
+                  size="lg"
+                  onClick={() => addItem(product)}
+                >
                   Add to Cart
                 </Button>
               ) : (
-                <Button variant="outline" className="w-full" disabled>
+                <Button variant="outline" className="w-full" disabled size="lg">
                   Sold Out
                 </Button>
               )}

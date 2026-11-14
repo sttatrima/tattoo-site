@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/context/cart-context";
+import { generateLocalBusinessJsonLd, studioData } from "@/lib/structured-data";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -18,7 +19,10 @@ const playfairDisplay = Playfair_Display({
   preload: true,
 });
 
+const siteUrl = "https://inkstudio.com";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
     default: "INK STUDIO | Custom Tattoos by Award-Winning Artists",
     template: "%s | INK STUDIO",
@@ -31,8 +35,8 @@ export const metadata: Metadata = {
   robots: "index, follow",
   openGraph: {
     type: "website",
-    locale: "en_US",
-    url: "https://inkstudio.com",
+    locale: "en_GB",
+    url: siteUrl,
     siteName: "INK STUDIO",
     title: "INK STUDIO | Custom Tattoos by Award-Winning Artists",
     description: "Premium custom tattoo studio featuring award-winning artists. Book your consultation today.",
@@ -70,10 +74,17 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${playfairDisplay.variable} h-full antialiased`}>
+    <html lang="en-GB" className={`${inter.variable} ${playfairDisplay.variable} h-full antialiased`}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="canonical" href={siteUrl} />
+        {/* JSON-LD LocalBusiness structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: generateLocalBusinessJsonLd() }}
+        />
+        <link rel="sitemap" href="/sitemap.xml" />
       </head>
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <CartProvider>{children}</CartProvider>

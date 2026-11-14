@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Button } from "@/components/Button";
 import { artists, getArtistBySlug } from "@/data/artists";
 import { tattoos, getTattoosByArtist } from "@/data/tattoos";
+import { generateArtistJsonLd } from "@/lib/structured-data";
 
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const artist = getArtistBySlug(params.slug);
@@ -26,9 +27,26 @@ export default function ArtistPage({ params }: { params: { slug: string } }) {
   if (!artist) notFound();
 
   const artistTattoos = getTattoosByArtist(artist.slug);
+  const artistUrl = `https://inkstudio.com/artists/${artist.slug}`;
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Artist JSON-LD */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: generateArtistJsonLd({
+            name: artist.name,
+            slug: artist.slug,
+            bio: artist.bio,
+            image: artist.avatar,
+            url: artistUrl,
+            email: artist.email,
+            instagram: artist.instagram,
+          }),
+        }}
+      />
+
       {/* Artist Hero Banner */}
       <section className="relative h-[60vh] md:h-[50vh] overflow-hidden">
         <Image
@@ -53,9 +71,11 @@ export default function ArtistPage({ params }: { params: { slug: string } }) {
             <Button href={`mailto:${artist.email}`} variant="outline" className="flex-1 sm:w-auto">
               Email {artist.name.split(" ")[0]}
             </Button>
-            <Button href={artist.instagram} variant="ghost" className="flex-1 sm:w-auto">
-              Instagram
-            </Button>
+            {artist.instagram && (
+              <Button href={artist.instagram} variant="ghost" className="flex-1 sm:w-auto">
+                Instagram
+              </Button>
+            )}
           </div>
         </div>
       </section>
